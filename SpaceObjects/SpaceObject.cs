@@ -6,6 +6,8 @@ namespace SpaceSim
     public abstract class SpaceObject
     {
         protected string name;
+
+        public string Name { get { return name; } }
         public double OrbitalRadius { get; }
         public double OrbitalPeriod { get; }
         public double RotationalPeriod { get; }
