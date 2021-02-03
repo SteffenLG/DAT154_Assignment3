@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -24,13 +25,13 @@ namespace Astronomy
         public static List<SpaceObject> ParseXML()
         {
             Dictionary<string, SpaceObject> spaceObjects = new Dictionary<string, SpaceObject>();
-            var doc = XDocument.Load("C:\\code\\csharp\\Assignment3\\Resources");
+            var doc = XDocument.Load("Resources\\Planets.xml");
             foreach (var col in doc.Root.Descendants("record"))
             {
                 string name = col.Element("Name").Value;
                 string dad = col.Element("Dad").Value;
                 double or = Double.Parse(col.Element("OrbitalRadius").Value);
-                double op = Double.Parse(col.Element("OrbitalPeriod").Value);
+                double op = Double.Parse(col.Element("OrbitalPeriod").Value, CultureInfo.InvariantCulture);
 
                 switch (dad)
                 {

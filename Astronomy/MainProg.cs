@@ -13,7 +13,9 @@ namespace Astronomy
             {
                 obj.Draw();
             }
+            Console.WriteLine($"The sun is located at: {solarSystem[0].CalculatePosition(25)}");
             Console.ReadLine();
+            
         }
     }
 }
