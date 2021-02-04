@@ -17,6 +17,7 @@ namespace SpaceSim
 
         public SpaceObject(string name, double orbitalRadius, double orbitalPeriod, double rotationalPeriod, SpaceObject dadBod, string color)
         {
+            // 1.0000025 Sweet spot log?
             this.name = name;
             Children = new List<SpaceObject>();
             OrbitalRadius = orbitalRadius;
