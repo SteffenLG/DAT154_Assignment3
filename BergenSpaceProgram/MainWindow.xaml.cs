@@ -107,6 +107,20 @@ namespace BergenSpaceProgram
                 }
                 double spaceWidth = maxX - minX;
                 double spaceHeight = maxY - minY;
+                if(spaceWidth > spaceHeight)
+				{
+                    double diff = spaceWidth - spaceHeight;
+                    maxY += diff / 2;
+                    minY -= diff / 2;
+                    spaceHeight = maxY - minY;
+
+                } else
+				{
+                    double diff = spaceHeight - spaceWidth;
+                    maxX += diff / 2;
+                    minX -= diff / 2;
+                    spaceWidth = maxX - minX;
+                }
 
                 (double, double) SpaceToCanvas(double x, double y)
                 {
