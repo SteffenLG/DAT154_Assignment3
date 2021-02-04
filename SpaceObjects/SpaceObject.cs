@@ -6,6 +6,7 @@ namespace SpaceSim
     public abstract class SpaceObject
     {
         protected string name;
+        public List<SpaceObject> Children { get; set; }
 
         public string Name { get { return name; } }
         public double OrbitalRadius { get; }
@@ -17,10 +18,16 @@ namespace SpaceSim
         public SpaceObject(string name, double orbitalRadius, double orbitalPeriod, double rotationalPeriod, SpaceObject dadBod, string color)
         {
             this.name = name;
+            Children = new List<SpaceObject>();
             OrbitalRadius = orbitalRadius;
             OrbitalPeriod = orbitalPeriod;
             RotationalPeriod = rotationalPeriod;
-            DadBod = dadBod;
+            if(dadBod != null)
+			{
+                DadBod = dadBod;                         
+                dadBod.Children.Add(this);
+            }
+
             Color = color;
         }
 

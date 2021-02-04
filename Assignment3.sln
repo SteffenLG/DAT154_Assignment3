@@ -3,14 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceObjects", "SpaceObjects\SpaceObjects.csproj", "{CBCEE60E-F8FB-4284-BEDB-ABBF110B45F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaceObjects", "SpaceObjects\SpaceObjects.csproj", "{CBCEE60E-F8FB-4284-BEDB-ABBF110B45F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Astronomy", "Astronomy\Astronomy.csproj", "{12ED4794-5FEA-49E6-A46B-45F537BCB83B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Astronomy", "Astronomy\Astronomy.csproj", "{12ED4794-5FEA-49E6-A46B-45F537BCB83B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{039599FD-943E-4361-BC6B-AD664F9606D9}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\Users\Steffen\Downloads\Planets.xml = ..\..\..\Users\Steffen\Downloads\Planets.xml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BergenSpaceProgram", "BergenSpaceProgram\BergenSpaceProgram.csproj", "{33FB0FB6-5FFE-4FF4-B336-B6E50CBE1E89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{12ED4794-5FEA-49E6-A46B-45F537BCB83B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12ED4794-5FEA-49E6-A46B-45F537BCB83B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12ED4794-5FEA-49E6-A46B-45F537BCB83B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33FB0FB6-5FFE-4FF4-B336-B6E50CBE1E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33FB0FB6-5FFE-4FF4-B336-B6E50CBE1E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33FB0FB6-5FFE-4FF4-B336-B6E50CBE1E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33FB0FB6-5FFE-4FF4-B336-B6E50CBE1E89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

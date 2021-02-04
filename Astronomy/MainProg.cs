@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using SpaceSim;
-
 namespace Astronomy
 {
     class MainProg
@@ -33,12 +32,14 @@ namespace Astronomy
                 else
                 {
                     Console.WriteLine(
-                        $"That's not a planet I've ever heard of! Do they speak english in {name}?");
+                        $"That's not a planet I've ever heard of! Do they speak English in {name}?");
                     name = Console.ReadLine();
                 }
             }
             while (!found);
             Console.WriteLine($"Name: {targetObject.Name}, Position: {targetObject.CalculatePosition(time)}");
+            targetObject.Children.ForEach(so => so.Draw());
+            Console.WriteLine();
             Console.WriteLine("Thank you for using SkyNet");
             Console.WriteLine();
             Console.WriteLine("(Press enter to exit)");

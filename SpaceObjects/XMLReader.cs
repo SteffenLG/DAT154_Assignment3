@@ -6,9 +6,9 @@ using System.Text;
 using System.Xml.Linq;
 using SpaceSim;
 
-namespace Astronomy
+namespace SpaceSim
 {
-    class XMLReader
+    public class XMLReader
     {
 
         /*public static List<SpaceObject> ParseFile(string path)
