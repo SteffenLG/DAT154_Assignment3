@@ -25,7 +25,8 @@ namespace BergenSpaceProgram
 		public MainWindow()
 		{
 			SpaceObject selectedObject = null;
-
+			double timeScale = 1;
+			double currentTime = 0;
 			#region Initialize SpaceObjects and Canvas Elements
 			InitializeComponent();
 
@@ -68,22 +69,16 @@ namespace BergenSpaceProgram
 				ellipses.Add(MyLittleEllipse);
 
 				MyLittleEllipse.MouseDown += (sender, e) => OnSpaceObjectClick(sender, e, so);
+				MyLittleEllipse.MouseMove += (sender, e) => OnSpaceObjectHover(sender, e, so, MyLittleEllipse);
 
-				void OnSpaceObjectClick(object sender, EventArgs e, SpaceObject so)
-				{
-					if(so.Children.Count < 1)
-					{
-						return;
-					}
-					selectedObject = so;
-				}
-
-				var window = Window.GetWindow(this);
-
-				window.KeyDown += HandleKeyPress;
-
+				
 			});
 
+			var window = Window.GetWindow(this);
+
+			window.KeyDown += HandleKeyPress;
+
+			TimeScaleSlider.ValueChanged += TimeScaleSlider_ValueChanged;
 			#endregion
 
 
@@ -97,7 +92,8 @@ namespace BergenSpaceProgram
 
 			void dispatcherTimer_Tick(object sender, EventArgs e)
 			{
-				Draw(DateTime.Now.TimeOfDay.TotalMilliseconds / 10);
+				currentTime += timeScale;
+				Draw(currentTime);
 			}
 			#endregion
 
@@ -212,7 +208,7 @@ namespace BergenSpaceProgram
 			}
 			#endregion
 
-			#region HandleKeyPress
+			#region HandleEvents
 
 			void HandleKeyPress(object sender, KeyboardEventArgs e)
 			{
@@ -221,8 +217,28 @@ namespace BergenSpaceProgram
 					selectedObject = null;
 				}
 			}
+
+			void OnSpaceObjectHover(object semder,MouseEventArgs e, SpaceObject so, Ellipse ellipse)
+			{
+
+			}
+
+			void OnSpaceObjectClick(object sender, EventArgs e, SpaceObject so)
+			{
+				if (so.Children.Count < 1)
+				{
+					return;
+				}
+				selectedObject = so;
+			}
+
+			void TimeScaleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+			{
+				timeScale = e.NewValue;
+			}
 			#endregion
 
 		}
+
 	}
 }

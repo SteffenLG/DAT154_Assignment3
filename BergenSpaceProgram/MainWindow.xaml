@@ -8,6 +8,8 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="Black">
         <Canvas Name="MyCanvas" Margin="25" Background="Black"/>
+        <Slider Name="TimeScaleSlider" HorizontalAlignment="Left" Margin="603,416,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label Content="TimeScale" HorizontalAlignment="Left" Margin="521,407,0,0" VerticalAlignment="Top" Width="82" Foreground="#FFF90000" FontWeight="Bold"/>
 
     </Grid>
 </Window>
