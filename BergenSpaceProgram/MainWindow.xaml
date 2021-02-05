@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BergenSpaceProgram"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid Background="Black">
         <Canvas Name="MyCanvas" Margin="25" Background="Black"/>
 
     </Grid>
