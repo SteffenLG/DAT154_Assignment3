@@ -47,13 +47,18 @@ namespace BergenSpaceProgram
 
 				
 
-			List<Ellipse> ellipses = new List<Ellipse>();
+			List<Grid> grids = new List<Grid>();
 			solarSystem.ForEach(so =>
 			{
+				Grid MyGrid = new Grid();
 				Ellipse MyLittleEllipse = new Ellipse();
-
+				Label MyLabel = new Label();
+				MyLabel.Content = so.Name;
+				MyLabel.IsHitTestVisible = false;
+				MyLabel.Foreground = new SolidColorBrush(Colors.Goldenrod);
 				switch (so)
 				{
+
 					case Star s:
 						MyLittleEllipse.Width = 50;
 						MyLittleEllipse.Height = 50;
@@ -68,6 +73,7 @@ namespace BergenSpaceProgram
 						MyLittleEllipse.Width = 10;
 						MyLittleEllipse.Height = 10;
 						MyLittleEllipse.Fill = new SolidColorBrush(Colors.Peru);
+						MyLabel.Visibility = Visibility.Hidden;
 						break;
 					default:
 						MyLittleEllipse.Width = 5;
@@ -78,8 +84,10 @@ namespace BergenSpaceProgram
 				}
 				Canvas.SetLeft(MyLittleEllipse, 150);
 				Canvas.SetTop(MyLittleEllipse, 150);
-				MyCanvas.Children.Add(MyLittleEllipse);
-				ellipses.Add(MyLittleEllipse);
+				MyGrid.Children.Add(MyLittleEllipse);
+				MyGrid.Children.Add(MyLabel);
+				MyCanvas.Children.Add(MyGrid);
+				grids.Add(MyGrid);
 
 				MyLittleEllipse.MouseDown += (sender, e) => OnSpaceObjectClick(sender, e, so, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
 				MyLittleEllipse.MouseMove += (sender, e) => OnSpaceObjectHover(sender, e, so, MyLittleEllipse);
@@ -115,10 +123,10 @@ namespace BergenSpaceProgram
 			{
 				if (selectedObject != null)
 				{
-					DrawSystem(time, solarSystem[0]);
+					DrawSystem(time, selectedObject);
 				} else
 				{
-					DrawSystem(time, selectedObject);
+					DrawSystem(time, solarSystem[0]);
 				}
 			}
 			void DrawSystem(double time, SpaceObject so)
@@ -135,8 +143,9 @@ namespace BergenSpaceProgram
 						MyCanvas.ActualWidth, MyCanvas.ActualHeight,
 						centerX,
 						centerY);
-					Canvas.SetLeft(ellipses[i], canvasX - ellipses[i].ActualWidth / 2);
-					Canvas.SetTop(ellipses[i], canvasY - ellipses[i].ActualHeight / 2);
+					Canvas.SetLeft(grids[i], canvasX - grids[i].ActualWidth / 2);
+					Canvas.SetTop(grids[i], canvasY - grids[i].ActualHeight / 2);
+					//draw text next to the ellipse if label is enabled
 				}
 			}
 			
