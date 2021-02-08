@@ -33,6 +33,19 @@ namespace BergenSpaceProgram
 
 
 			List<SpaceObject> solarSystem = XMLReader.ParseXML();
+			double pixelsPerMegameter = PixelsPerMegameter(solarSystem, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
+			double zoomFactor = 1.0;
+
+			MyCanvas.SizeChanged += (object sender, SizeChangedEventArgs e) =>
+			{
+				if(selectedObject == null || selectedObject.Children.Count < 1)
+					pixelsPerMegameter = PixelsPerMegameter(solarSystem, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
+				else
+					pixelsPerMegameter = PixelsPerMegameter(selectedObject.Children, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
+			};
+
+
+				
 
 			List<Ellipse> ellipses = new List<Ellipse>();
 			solarSystem.ForEach(so =>
@@ -68,7 +81,7 @@ namespace BergenSpaceProgram
 				MyCanvas.Children.Add(MyLittleEllipse);
 				ellipses.Add(MyLittleEllipse);
 
-				MyLittleEllipse.MouseDown += (sender, e) => OnSpaceObjectClick(sender, e, so);
+				MyLittleEllipse.MouseDown += (sender, e) => OnSpaceObjectClick(sender, e, so, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
 				MyLittleEllipse.MouseMove += (sender, e) => OnSpaceObjectHover(sender, e, so, MyLittleEllipse);
 
 				
@@ -102,119 +115,91 @@ namespace BergenSpaceProgram
 			{
 				if (selectedObject != null)
 				{
-					DrawSelected(time);
+					DrawSystem(time, solarSystem[0]);
 				} else
 				{
-					DrawNoneSelected(time);
+					DrawSystem(time, selectedObject);
 				}
 			}
-			void DrawSelected(double time)
+			void DrawSystem(double time, SpaceObject so)
 			{
-				(double centerX, double centerY) = selectedObject.CalculatePosition(time);
+				(double centerX, double centerY) = so.CalculatePosition(time);
 
-				double maxRadius = selectedObject.Children.OrderByDescending(item => item.OrbitalRadius).First().OrbitalRadius;
-
-				(double, double) SpaceToCanvas(double x, double y)
-				{
-					double Lerp(double firstFloat, double secondFloat, double by)
-					{
-						return firstFloat * (1 - by) + secondFloat * by;
-					}
-
-
-					double factorX = (x - (-maxRadius)- centerX) / (maxRadius*2);
-					double factorY = (y - (-maxRadius) - centerY) / (maxRadius*2);
-
-					double canvasX = Lerp(0, MyCanvas.ActualWidth, factorX);
-					double canvasY = Lerp(0, MyCanvas.ActualHeight, factorY);
-					return (canvasX, canvasY);
-				}
 				for (int i = 0; i < solarSystem.Count; i++)
 				{
 					(double x, double y) = solarSystem[i].CalculatePosition(time);
-					(double canvasX, double canvasY) = SpaceToCanvas(x, y);
+					(double canvasX, double canvasY) = Space2Canvas2ElectricBogaloo(
+						time, 
+						pixelsPerMegameter*zoomFactor,
+						x, y,
+						MyCanvas.ActualWidth, MyCanvas.ActualHeight,
+						centerX,
+						centerY);
 					Canvas.SetLeft(ellipses[i], canvasX - ellipses[i].ActualWidth / 2);
 					Canvas.SetTop(ellipses[i], canvasY - ellipses[i].ActualHeight / 2);
 				}
 			}
-			void DrawNoneSelected(double time)
-			{
-				double maxX = 0;
-				double maxY = 0;
-				double minX = 0;
-				double minY = 0;
+			
+            #endregion
+            
+			#region ScaleCalculations
 
-				for (int i = 0; i < solarSystem.Count; i++)
+			//finne den største radiusen
+			//lage en skaleringsfaktor som lar oss oversette fra avstand fra solen til avstand fra sentrum i vinduet
+			//regne ut pixel per Megameter (ppM)
+
+			double PixelsPerMegameter(List<SpaceObject> spaceObjects, double screenWidth, double screenHeight)
+            {
+				double maxRadius = 0;
+				spaceObjects.ForEach(so =>
 				{
-					(double x, double y) = solarSystem[i].CalculatePosition(time);
-
-					if (x > maxX)
+					if (so.OrbitalRadius > maxRadius)
 					{
-						maxX = x;
+						maxRadius = so.OrbitalRadius;
 					}
-					if (x < minX)
-					{
-						minX = x;
-					}
-					if (y > maxY)
-					{
-						maxY = y;
-					}
-					if (y < minY)
-					{
-						minY = y;
-					}
-				}
-				double spaceWidth = maxX - minX;
-				double spaceHeight = maxY - minY;
-				if (spaceWidth > spaceHeight)
-				{
-					double diff = spaceWidth - spaceHeight;
-					maxY += diff / 2;
-					minY -= diff / 2;
-					spaceHeight = maxY - minY;
+				});
 
-				}
-				else
-				{
-					double diff = spaceHeight - spaceWidth;
-					maxX += diff / 2;
-					minX -= diff / 2;
-					spaceWidth = maxX - minX;
-				}
-
-				(double, double) SpaceToCanvas(double x, double y)
-				{
-					double Lerp(double firstFloat, double secondFloat, double by)
-					{
-						return firstFloat * (1 - by) + secondFloat * by;
-					}
-
-
-					double factorX = (x - minX) / spaceWidth;
-					double factorY = (y - minY) / spaceHeight;
-
-					double canvasX = Lerp(0, MyCanvas.ActualWidth, factorX);
-					double canvasY = Lerp(0, MyCanvas.ActualHeight, factorY);
-					return (canvasX, canvasY);
-				}
-				for (int i = 0; i < solarSystem.Count; i++)
-				{
-					(double x, double y) = solarSystem[i].CalculatePosition(time);
-					(double canvasX, double canvasY) = SpaceToCanvas(x, y);
-					Canvas.SetLeft(ellipses[i], canvasX - ellipses[i].ActualWidth / 2);
-					Canvas.SetTop(ellipses[i], canvasY - ellipses[i].ActualHeight / 2);
-				}
+				return (screenWidth > screenHeight ? screenWidth : screenHeight) / (2*maxRadius);
 			}
-			#endregion
 
-			#region HandleEvents
+			(double, double) Space2Canvas2ElectricBogaloo (
+				double time, 
+				double pixelsPerMegameter, 
+				double x, 
+				double y, 
+				double screenWidth, 
+				double screenHeight,
+				double spaceX = 0, 
+				double spaceY = 0)
+            {
+				//(0,0) is center of space
+				//if you have selected another planet, (spaceX, spaceY) is center of space
+				//(width/2, height/2) is center of canvas
 
-			void HandleKeyPress(object sender, KeyboardEventArgs e)
+				return ((-spaceX + x) * pixelsPerMegameter + screenWidth/2, (-spaceY + y) * pixelsPerMegameter + screenHeight/2);
+            }
+
+
+            #endregion
+            #region HandleEvents
+
+            void HandleKeyPress(object sender, KeyboardEventArgs e)
 			{
 				if (e.KeyboardDevice.IsKeyDown(Key.Escape))
 				{
 					selectedObject = null;
+					pixelsPerMegameter = PixelsPerMegameter(solarSystem, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
+				}
+				else if (e.KeyboardDevice.IsKeyDown(Key.Up))
+                {
+					zoomFactor += 0.10;
+                }
+				else if (e.KeyboardDevice.IsKeyDown(Key.Down))
+				{
+					
+					zoomFactor -= 0.10;
+					if (zoomFactor <= 0.0001)
+						zoomFactor = 0.10;
 				}
 			}
 
@@ -223,13 +208,14 @@ namespace BergenSpaceProgram
 
 			}
 
-			void OnSpaceObjectClick(object sender, EventArgs e, SpaceObject so)
+			void OnSpaceObjectClick(object sender, EventArgs e, SpaceObject so, double screenWidth, double screenHeight)
 			{
 				if (so.Children.Count < 1)
 				{
 					return;
 				}
 				selectedObject = so;
+				pixelsPerMegameter = PixelsPerMegameter(so.Children, screenWidth, screenHeight);
 			}
 
 			void TimeScaleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

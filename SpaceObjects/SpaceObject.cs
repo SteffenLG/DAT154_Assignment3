@@ -43,6 +43,7 @@ namespace SpaceSim
             (double dadX, double dadY) = DadBod.CalculatePosition(time);
             return (Math.Cos(theta) * OrbitalRadius + dadX, Math.Sin(theta) * OrbitalRadius + dadY);
         }
+
     }
 
     public class Star : SpaceObject
