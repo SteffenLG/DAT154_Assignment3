@@ -26,7 +26,7 @@ namespace BergenSpaceProgram
 		List<SpaceObjectHolder> spaceObjectHolders;
 		public MainWindow()
 		{
-			
+
 			#region Initialize SpaceObjects and Canvas Elements
 			InitializeComponent();
 
@@ -36,7 +36,7 @@ namespace BergenSpaceProgram
 
 			MyCanvas.SizeChanged += (object sender, SizeChangedEventArgs e) =>
 			{
-				if(selectedObject == null || selectedObject.Children.Count < 1)
+				if (selectedObject == null || selectedObject.Children.Count < 1)
 					pixelsPerMegameter = PixelsPerMegameter(solarSystemData, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
 				else
 					pixelsPerMegameter = PixelsPerMegameter(selectedObject.Children, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
@@ -51,7 +51,8 @@ namespace BergenSpaceProgram
 				SpaceObjectHolder currentSpaceObjectHolder = new SpaceObjectHolder(MyCanvas, so);
 				spaceObjectHolders.Add(currentSpaceObjectHolder);
 				currentSpaceObjectHolder.Ellipse.MouseDown += (sender, e) => OnSpaceObjectClick(sender, e, so, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
-				currentSpaceObjectHolder.Ellipse.MouseMove += (sender, e) => OnSpaceObjectHover(sender, e, so, currentSpaceObjectHolder.Ellipse);
+				currentSpaceObjectHolder.Ellipse.MouseEnter += (sender, e) => OnSpaceObjectHover(sender, e, currentSpaceObjectHolder, true);
+				currentSpaceObjectHolder.Ellipse.MouseLeave += (sender, e) => OnSpaceObjectHover(sender, e, currentSpaceObjectHolder, false);
 			});
 
 			var window = Window.GetWindow(this);
@@ -83,7 +84,8 @@ namespace BergenSpaceProgram
 				if (selectedObject != null)
 				{
 					DrawSystem(time, selectedObject);
-				} else
+				}
+				else
 				{
 					DrawSystem(time, solarSystemData[0]);
 				}
@@ -94,39 +96,15 @@ namespace BergenSpaceProgram
 
 				foreach (SpaceObjectHolder item in spaceObjectHolders)
 				{
-					(double x, double y) = item.spaceObjectData.CalculatePosition(time);
-					(double canvasX, double canvasY) = Space2Canvas2ElectricBogaloo(
-						time,
-						pixelsPerMegameter * zoomFactor,
-						x, y,
-						MyCanvas.ActualWidth, MyCanvas.ActualHeight,
-						centerX,
-						centerY);
-					item.SetX(canvasX);
-					item.SetY(canvasY);
-					//Canvas.SetLeft(item.canvas, canvasX - item.canvas.ActualWidth / 2);
-					//Canvas.SetTop(item.canvas, canvasY - item.canvas.ActualHeight / 2);
+					item.UpdatePosition(time,pixelsPerMegameter * zoomFactor,
+						MyCanvas.ActualWidth, MyCanvas.ActualHeight, 
+						centerX, centerY);
 				}
-				/*
-				for (int i = 0; i < spaceObjectHolders.Count; i++)
-				{
-					(double x, double y) = solarSystem[i].CalculatePosition(time);
-					(double canvasX, double canvasY) = Space2Canvas2ElectricBogaloo(
-						time, 
-						pixelsPerMegameter*zoomFactor,
-						x, y,
-						MyCanvas.ActualWidth, MyCanvas.ActualHeight,
-						centerX,
-						centerY);
-					Canvas.SetLeft(grids[i], canvasX - grids[i].ActualWidth / 2);
-					Canvas.SetTop(grids[i], canvasY - grids[i].ActualHeight / 2);
-					//draw text next to the ellipse if label is enabled
-				}
-				*/
+				
 			}
-			
-            #endregion
-            
+
+			#endregion
+
 			#region ScaleCalculations
 
 			//finne den største radiusen
@@ -134,7 +112,7 @@ namespace BergenSpaceProgram
 			//regne ut pixel per Megameter (ppM)
 
 			double PixelsPerMegameter(List<SpaceObject> spaceObjects, double screenWidth, double screenHeight)
-            {
+			{
 				double maxRadius = 0;
 				spaceObjects.ForEach(so =>
 				{
@@ -144,31 +122,16 @@ namespace BergenSpaceProgram
 					}
 				});
 
-				return (screenWidth > screenHeight ? screenWidth : screenHeight) / (2*maxRadius);
+				return (screenWidth > screenHeight ? screenWidth : screenHeight) / (2 * maxRadius);
 			}
 
-			(double, double) Space2Canvas2ElectricBogaloo (
-				double time, 
-				double pixelsPerMegameter, 
-				double x, 
-				double y, 
-				double screenWidth, 
-				double screenHeight,
-				double spaceX = 0, 
-				double spaceY = 0)
-            {
-				//(0,0) is center of space
-				//if you have selected another planet, (spaceX, spaceY) is center of space
-				//(width/2, height/2) is center of canvas
-
-				return ((-spaceX + x) * pixelsPerMegameter + screenWidth/2, (-spaceY + y) * pixelsPerMegameter + screenHeight/2);
-            }
+			
 
 
-            #endregion
-            #region HandleEvents
+			#endregion
+			#region HandleEvents
 
-            void HandleKeyPress(object sender, KeyboardEventArgs e)
+			void HandleKeyPress(object sender, KeyboardEventArgs e)
 			{
 				if (e.KeyboardDevice.IsKeyDown(Key.Escape))
 				{
@@ -177,21 +140,50 @@ namespace BergenSpaceProgram
 					InfoPanel.Visibility = Visibility.Hidden;
 				}
 				else if (e.KeyboardDevice.IsKeyDown(Key.Up))
-                {
+				{
 					zoomFactor += 0.10;
-                }
+				}
 				else if (e.KeyboardDevice.IsKeyDown(Key.Down))
 				{
-					
+
 					zoomFactor -= 0.10;
 					if (zoomFactor <= 0.0001)
 						zoomFactor = 0.10;
 				}
 			}
 
-			void OnSpaceObjectHover(object semder,MouseEventArgs e, SpaceObject so, Ellipse ellipse)
+			void OnSpaceObjectHover(object sender, MouseEventArgs e, SpaceObjectHolder soh, bool entering)
 			{
+				
+				if (entering)
+				{
+					if (soh.showingLabel) return;
+					soh.ToggleLabel(true);
 
+					
+				}
+				else //leaving
+				{
+					if (!soh.showingLabel) return;
+
+					switch (soh.spaceObjectData)
+					{
+						case Moon m:
+							soh.ToggleLabel(ShowMoonLabels.IsChecked ?? false);
+							break;
+						case Star star:
+							soh.ToggleLabel(ShowPlanetLabels.IsChecked ?? false);
+							break;
+						case Planet planet:
+							soh.ToggleLabel(ShowPlanetLabels.IsChecked ?? false);
+							break;
+						default:
+							break;
+					}
+
+				}
+
+				
 			}
 
 			void OnSpaceObjectClick(object sender, EventArgs e, SpaceObject so, double screenWidth, double screenHeight)
@@ -209,7 +201,7 @@ namespace BergenSpaceProgram
 				InfoPanelOrbitalRadius.Content = selectedObject.OrbitalRadius;
 				InfoPanelOrbitalPeriod.Content = selectedObject.OrbitalPeriod;
 				InfoPanelRotationalPeriod.Content = selectedObject.RotationalPeriod;
-				InfoPanelDadBod.Content = selectedObject.DadBod.Name;
+				InfoPanelDadBod.Content = (selectedObject.DadBod != null) ? selectedObject.DadBod.Name : "";
 
 			}
 
@@ -230,8 +222,8 @@ namespace BergenSpaceProgram
 
 		private void ShowPlanetLabels_Unchecked(object sender, RoutedEventArgs e)
 		{
-			spaceObjectHolders?.Where(soh => soh.spaceObjectData.GetType() == typeof(Planet) 
-			|| soh.spaceObjectData.GetType()== typeof(Star)).ToList()
+			spaceObjectHolders?.Where(soh => soh.spaceObjectData.GetType() == typeof(Planet)
+			|| soh.spaceObjectData.GetType() == typeof(Star)).ToList()
 				.ForEach(soh => soh.ToggleLabel(false));
 		}
 

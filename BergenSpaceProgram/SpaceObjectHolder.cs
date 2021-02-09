@@ -21,6 +21,9 @@ namespace BergenSpaceProgram
 		private Line line;
 		private Line underLine;
 
+		public bool showingLabel = true;
+
+		Ellipse orbitEllipse;
 		public SpaceObjectHolder(Canvas parentCanvas,SpaceObject spaceObject)
 		{
 			this.spaceObjectData = spaceObject;
@@ -29,6 +32,16 @@ namespace BergenSpaceProgram
 			canvas = new Canvas();
 			ellipse = new Ellipse();
 			label = new Label();
+
+
+			orbitEllipse = new Ellipse();
+			orbitEllipse.Visibility = Visibility.Hidden;
+			orbitEllipse.Stroke = new SolidColorBrush(Colors.White);
+			orbitEllipse.StrokeThickness = 2;
+			orbitEllipse.Fill = new SolidColorBrush(Colors.Transparent);
+			parentCanvas.Children.Add(orbitEllipse);
+			orbitEllipse.IsHitTestVisible = false;
+
 			label.Content = spaceObjectData.Name;
 			label.IsHitTestVisible = false;
 			label.Foreground = new SolidColorBrush(Colors.Goldenrod);
@@ -44,6 +57,13 @@ namespace BergenSpaceProgram
 					ellipse.Width = 25;
 					ellipse.Height = 25;
 					ellipse.Fill = new SolidColorBrush(Colors.DeepPink);
+
+					orbitEllipse.Visibility = Visibility.Visible;
+
+					orbitEllipse.Width = spaceObjectData.OrbitalRadius * 2;
+					orbitEllipse.Height = spaceObjectData.OrbitalRadius * 2;
+
+
 					break;
 				case Moon m:
 					ellipse.Width = 10;
@@ -52,6 +72,7 @@ namespace BergenSpaceProgram
 					label.Visibility = Visibility.Hidden;
 					line.Visibility = Visibility.Hidden;
 					underLine.Visibility = Visibility.Hidden;
+					showingLabel = false;
 					break;
 				default:
 					ellipse.Width = 5;
@@ -87,29 +108,43 @@ namespace BergenSpaceProgram
 			parentCanvas.Children.Add(canvas);
 		}
 
-		public void SetX(double x)
-        {
-			Canvas.SetLeft(canvas, x  - ELLIPSE_SHIFT - ellipse.ActualWidth/2);
-			
-        }
-		public void SetY(double y)
-        {
-			Canvas.SetTop(canvas, y - ELLIPSE_SHIFT - ellipse.ActualHeight / 2);
-        }
 
-		public double GetX()
-        {
-			return Canvas.GetLeft(canvas) + ELLIPSE_SHIFT + ellipse.ActualWidth / 2;
-        }
-		public double GetY()
-        {
-			return Canvas.GetTop(canvas) + ELLIPSE_SHIFT + ellipse.ActualHeight / 2;
 
+		internal void UpdatePosition(double time, double ppmZ, double actualWidth, double actualHeight, double centerX, double centerY)
+		{
+			(double x, double y) = spaceObjectData.CalculatePosition(time);
+			(double canvasX, double canvasY) = Space2Canvas2ElectricBogaloo(
+				time,
+				ppmZ,
+				x, y,
+				actualWidth, actualHeight,
+				centerX,
+				centerY);
+			Canvas.SetLeft(canvas, canvasX - ELLIPSE_SHIFT - ellipse.ActualWidth / 2);
+			Canvas.SetTop(canvas, canvasY - ELLIPSE_SHIFT - ellipse.ActualHeight / 2);
+
+			if (spaceObjectData.DadBod == null) return;
+			(double dadX, double dadY) = spaceObjectData.DadBod.CalculatePosition(time);
+			(double canvasDadX, double canvasDadY) = Space2Canvas2ElectricBogaloo(
+				time,
+				ppmZ,
+				dadX, dadY,
+				actualWidth, actualHeight,
+				centerX,
+				centerY);
+			Canvas.SetLeft(orbitEllipse, canvasDadX  - orbitEllipse.ActualWidth / 2);
+			Canvas.SetTop(orbitEllipse, canvasDadY - orbitEllipse.ActualHeight / 2);
+
+			orbitEllipse.Width = spaceObjectData.OrbitalRadius * 2 * ppmZ;
+			orbitEllipse.Height = spaceObjectData.OrbitalRadius * 2 * ppmZ;
 		}
+
 
 		public void ToggleLabel(bool state)
         {
-			if(state == false)
+			if (showingLabel == state) return;
+			showingLabel = state;
+			if (state == false)
             {
 				label.Visibility = Visibility.Hidden;
 				line.Visibility = Visibility.Hidden;
@@ -122,6 +157,24 @@ namespace BergenSpaceProgram
 				underLine.Visibility = Visibility.Visible;
             }
         }
+
+
+		(double, double) Space2Canvas2ElectricBogaloo(
+				double time,
+				double pixelsPerMegameter,
+				double x,
+				double y,
+				double screenWidth,
+				double screenHeight,
+				double spaceX = 0,
+				double spaceY = 0)
+		{
+			//(0,0) is center of space
+			//if you have selected another planet, (spaceX, spaceY) is center of space
+			//(width/2, height/2) is center of canvas
+
+			return ((-spaceX + x) * pixelsPerMegameter + screenWidth / 2, (-spaceY + y) * pixelsPerMegameter + screenHeight / 2);
+		}
 	}
 
 }

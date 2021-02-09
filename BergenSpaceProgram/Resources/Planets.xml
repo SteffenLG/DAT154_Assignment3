@@ -78,7 +78,7 @@
 		<Name>Deimos</Name>
 		<Dad>Mars</Dad>
 		<OrbitalRadius>23</OrbitalRadius>
-		<OrbitalPeriod>46023</OrbitalPeriod>
+		<OrbitalPeriod>1.25</OrbitalPeriod>
 	</record>
 	
 	<record>
