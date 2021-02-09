@@ -7,10 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="Black">
-        <Canvas Name="MyCanvas" Margin="32,25,25,25" Background="Black"/>
-        <Slider Name="TimeScaleSlider" HorizontalAlignment="Left" Margin="531,395,0,0" VerticalAlignment="Top" Width="247" SmallChange="0.01" RenderTransformOrigin="0.5,0.5"/>
-        <Label Content="TimeScale" HorizontalAlignment="Left" Margin="531,373,0,0" VerticalAlignment="Top" Width="82" Foreground="#FFF90000" FontWeight="Bold" Visibility="Visible"/>
-        <Label Content="{Binding ElementName=TimeScaleSlider, Path=Value}" HorizontalAlignment="Left" Foreground="#FFF90000" FontWeight="Bold" Margin="623,378,0,0" VerticalAlignment="Top"/>
 
+        <Canvas Name="MyCanvas" Margin="32,25,25,25" Background="Black">
+            <Canvas Name="TimeScaleCanvas" Background="#FF0072D6"  RenderTransformOrigin="1,1" Height="107" Canvas.Right="10" Canvas.Bottom="10" Width="236" Canvas.Left="497" Canvas.Top="267">
+                <Slider Name="TimeScaleSlider" Width="236" SmallChange="0.01" RenderTransformOrigin="0.502,0.556" Canvas.Bottom="0"/>
+                <Label Content="TimeScale" Width="71" Foreground="#FFF90000" FontWeight="Bold" Visibility="Visible" Height="26" Canvas.Bottom="15"/>
+                <Label Content="{Binding ElementName=TimeScaleSlider, Path=Value}"  Foreground="#FFF90000" FontWeight="Bold" Canvas.Right="0" Canvas.Bottom="15"/>
+            </Canvas>
+        </Canvas>
     </Grid>
 </Window>
