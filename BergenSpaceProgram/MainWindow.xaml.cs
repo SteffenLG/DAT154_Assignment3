@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-
 using SpaceSim;
 
 namespace BergenSpaceProgram
@@ -22,77 +15,43 @@ namespace BergenSpaceProgram
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		SpaceObject selectedObject = null;
+		double timeScale = 1;
+		double currentTime = 0;
+
+		List<SpaceObject> solarSystemData = XMLReader.ParseXML();
+		double pixelsPerMegameter = 1;
+		double zoomFactor = 1.0;
+
+		List<SpaceObjectHolder> spaceObjectHolders;
 		public MainWindow()
 		{
-			SpaceObject selectedObject = null;
-			double timeScale = 1;
-			double currentTime = 0;
+			
 			#region Initialize SpaceObjects and Canvas Elements
 			InitializeComponent();
 
 
 
-			List<SpaceObject> solarSystem = XMLReader.ParseXML();
-			double pixelsPerMegameter = PixelsPerMegameter(solarSystem, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
-			double zoomFactor = 1.0;
+			pixelsPerMegameter = PixelsPerMegameter(solarSystemData, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
 
 			MyCanvas.SizeChanged += (object sender, SizeChangedEventArgs e) =>
 			{
 				if(selectedObject == null || selectedObject.Children.Count < 1)
-					pixelsPerMegameter = PixelsPerMegameter(solarSystem, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
+					pixelsPerMegameter = PixelsPerMegameter(solarSystemData, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
 				else
 					pixelsPerMegameter = PixelsPerMegameter(selectedObject.Children, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
 			};
 
 
-				
 
-			List<Grid> grids = new List<Grid>();
-			solarSystem.ForEach(so =>
+
+			spaceObjectHolders = new List<SpaceObjectHolder>();
+			solarSystemData.ForEach(so =>
 			{
-				Grid MyGrid = new Grid();
-				Ellipse MyLittleEllipse = new Ellipse();
-				Label MyLabel = new Label();
-				MyLabel.Content = so.Name;
-				MyLabel.IsHitTestVisible = false;
-				MyLabel.Foreground = new SolidColorBrush(Colors.Goldenrod);
-				switch (so)
-				{
-
-					case Star s:
-						MyLittleEllipse.Width = 50;
-						MyLittleEllipse.Height = 50;
-						MyLittleEllipse.Fill = new SolidColorBrush(Colors.Cornsilk);
-						break;
-					case Planet p:
-						MyLittleEllipse.Width = 25;
-						MyLittleEllipse.Height = 25;
-						MyLittleEllipse.Fill = new SolidColorBrush(Colors.DeepPink);
-						break;
-					case Moon m:
-						MyLittleEllipse.Width = 10;
-						MyLittleEllipse.Height = 10;
-						MyLittleEllipse.Fill = new SolidColorBrush(Colors.Peru);
-						MyLabel.Visibility = Visibility.Hidden;
-						break;
-					default:
-						MyLittleEllipse.Width = 5;
-						MyLittleEllipse.Height = 5;
-						MyLittleEllipse.Fill = new SolidColorBrush(Colors.OldLace);
-						break;
-
-				}
-				Canvas.SetLeft(MyLittleEllipse, 150);
-				Canvas.SetTop(MyLittleEllipse, 150);
-				MyGrid.Children.Add(MyLittleEllipse);
-				MyGrid.Children.Add(MyLabel);
-				MyCanvas.Children.Add(MyGrid);
-				grids.Add(MyGrid);
-
-				MyLittleEllipse.MouseDown += (sender, e) => OnSpaceObjectClick(sender, e, so, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
-				MyLittleEllipse.MouseMove += (sender, e) => OnSpaceObjectHover(sender, e, so, MyLittleEllipse);
-
-				
+				SpaceObjectHolder currentSpaceObjectHolder = new SpaceObjectHolder(MyCanvas, so);
+				spaceObjectHolders.Add(currentSpaceObjectHolder);
+				currentSpaceObjectHolder.Ellipse.MouseDown += (sender, e) => OnSpaceObjectClick(sender, e, so, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
+				currentSpaceObjectHolder.Ellipse.MouseMove += (sender, e) => OnSpaceObjectHover(sender, e, so, currentSpaceObjectHolder.Ellipse);
 			});
 
 			var window = Window.GetWindow(this);
@@ -126,14 +85,30 @@ namespace BergenSpaceProgram
 					DrawSystem(time, selectedObject);
 				} else
 				{
-					DrawSystem(time, solarSystem[0]);
+					DrawSystem(time, solarSystemData[0]);
 				}
 			}
 			void DrawSystem(double time, SpaceObject so)
 			{
 				(double centerX, double centerY) = so.CalculatePosition(time);
 
-				for (int i = 0; i < solarSystem.Count; i++)
+				foreach (SpaceObjectHolder item in spaceObjectHolders)
+				{
+					(double x, double y) = item.spaceObjectData.CalculatePosition(time);
+					(double canvasX, double canvasY) = Space2Canvas2ElectricBogaloo(
+						time,
+						pixelsPerMegameter * zoomFactor,
+						x, y,
+						MyCanvas.ActualWidth, MyCanvas.ActualHeight,
+						centerX,
+						centerY);
+					item.SetX(canvasX);
+					item.SetY(canvasY);
+					//Canvas.SetLeft(item.canvas, canvasX - item.canvas.ActualWidth / 2);
+					//Canvas.SetTop(item.canvas, canvasY - item.canvas.ActualHeight / 2);
+				}
+				/*
+				for (int i = 0; i < spaceObjectHolders.Count; i++)
 				{
 					(double x, double y) = solarSystem[i].CalculatePosition(time);
 					(double canvasX, double canvasY) = Space2Canvas2ElectricBogaloo(
@@ -147,6 +122,7 @@ namespace BergenSpaceProgram
 					Canvas.SetTop(grids[i], canvasY - grids[i].ActualHeight / 2);
 					//draw text next to the ellipse if label is enabled
 				}
+				*/
 			}
 			
             #endregion
@@ -197,7 +173,7 @@ namespace BergenSpaceProgram
 				if (e.KeyboardDevice.IsKeyDown(Key.Escape))
 				{
 					selectedObject = null;
-					pixelsPerMegameter = PixelsPerMegameter(solarSystem, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
+					pixelsPerMegameter = PixelsPerMegameter(solarSystemData, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
 				}
 				else if (e.KeyboardDevice.IsKeyDown(Key.Up))
                 {
@@ -235,5 +211,35 @@ namespace BergenSpaceProgram
 
 		}
 
+		private void ShowPlanetLabels_Checked(object sender, RoutedEventArgs e)
+		{
+			spaceObjectHolders?.Where(soh => soh.spaceObjectData.GetType() == typeof(Planet)
+			|| soh.spaceObjectData.GetType() == typeof(Star)).ToList()
+				.ForEach(soh => soh.ToggleLabel(true));
+		}
+
+		private void ShowPlanetLabels_Unchecked(object sender, RoutedEventArgs e)
+		{
+			spaceObjectHolders?.Where(soh => soh.spaceObjectData.GetType() == typeof(Planet) 
+			|| soh.spaceObjectData.GetType()== typeof(Star)).ToList()
+				.ForEach(soh => soh.ToggleLabel(false));
+		}
+
+		private void ShowMoonLabels_Checked(object sender, RoutedEventArgs e)
+		{
+			spaceObjectHolders?.Where(soh => soh.spaceObjectData.GetType() == typeof(Moon)).ToList()
+				.ForEach(soh => soh.ToggleLabel(true));
+		}
+
+		private void ShowMoonLabels_Unchecked(object sender, RoutedEventArgs e)
+		{
+			spaceObjectHolders?.Where(soh => soh.spaceObjectData.GetType() == typeof(Moon)).ToList()
+				.ForEach(soh => soh.ToggleLabel(false));
+		}
+
+		private void ZoomScaleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			zoomFactor = e.NewValue;
+		}
 	}
 }

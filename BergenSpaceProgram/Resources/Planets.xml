@@ -351,25 +351,25 @@
 		<Name>Miranda</Name>
 		<Dad>Uranus</Dad>
 		<OrbitalRadius>130</OrbitalRadius>
-		<OrbitalPeriod>14977</OrbitalPeriod>
+		<OrbitalPeriod>1.41</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Ariel</Name>
 		<Dad>Uranus</Dad>
 		<OrbitalRadius>191</OrbitalRadius>
-		<OrbitalPeriod>19025</OrbitalPeriod>
+		<OrbitalPeriod>2.52</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Umbriel</Name>
 		<Dad>Uranus</Dad>
 		<OrbitalRadius>266</OrbitalRadius>
-		<OrbitalPeriod>41730</OrbitalPeriod>
+		<OrbitalPeriod>4.14</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Titania</Name>
 		<Dad>Uranus</Dad>
 		<OrbitalRadius>436</OrbitalRadius>
-		<OrbitalPeriod>26146</OrbitalPeriod>
+		<OrbitalPeriod>8.71</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Oberon</Name>
@@ -448,7 +448,7 @@
 		<Name>Proteus</Name>
 		<Dad>Neptune</Dad>
 		<OrbitalRadius>118</OrbitalRadius>
-		<OrbitalPeriod>44166</OrbitalPeriod>
+		<OrbitalPeriod>1.12</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Triton</Name>
@@ -466,7 +466,7 @@
 		<Name>Charon</Name>
 		<Dad>Pluto</Dad>
 		<OrbitalRadius>20</OrbitalRadius>
-		<OrbitalPeriod>14397</OrbitalPeriod>
+		<OrbitalPeriod>6.375</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Nix</Name>
