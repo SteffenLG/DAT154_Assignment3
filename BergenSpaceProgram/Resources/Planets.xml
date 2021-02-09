@@ -109,19 +109,19 @@
 		<Name>Io</Name>
 		<Dad>Jupiter</Dad>
 		<OrbitalRadius>422</OrbitalRadius>
-		<OrbitalPeriod>28126</OrbitalPeriod>
+		<OrbitalPeriod>1.77</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Europa</Name>
 		<Dad>Jupiter</Dad>
 		<OrbitalRadius>671</OrbitalRadius>
-		<OrbitalPeriod>20149</OrbitalPeriod>
+		<OrbitalPeriod>3.55</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Ganymede</Name>
 		<Dad>Jupiter</Dad>
 		<OrbitalRadius>1070</OrbitalRadius>
-		<OrbitalPeriod>42186</OrbitalPeriod>
+		<OrbitalPeriod>7.15</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Callisto</Name>
@@ -224,43 +224,43 @@
 		<Name>Enceladus</Name>
 		<Dad>Saturn</Dad>
 		<OrbitalRadius>238</OrbitalRadius>
-		<OrbitalPeriod>13516</OrbitalPeriod>
+		<OrbitalPeriod>1.37</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Tethys</Name>
 		<Dad>Saturn</Dad>
 		<OrbitalRadius>295</OrbitalRadius>
-		<OrbitalPeriod>32509</OrbitalPeriod>
+		<OrbitalPeriod>1.89</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Telesto</Name>
 		<Dad>Saturn</Dad>
 		<OrbitalRadius>295</OrbitalRadius>
-		<OrbitalPeriod>32509</OrbitalPeriod>
+		<OrbitalPeriod>1.89</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Calypso</Name>
 		<Dad>Saturn</Dad>
 		<OrbitalRadius>295</OrbitalRadius>
-		<OrbitalPeriod>32509</OrbitalPeriod>
+		<OrbitalPeriod>1.89</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Dione</Name>
 		<Dad>Saturn</Dad>
 		<OrbitalRadius>377</OrbitalRadius>
-		<OrbitalPeriod>27061</OrbitalPeriod>
+		<OrbitalPeriod>2.74</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Helene</Name>
 		<Dad>Saturn</Dad>
 		<OrbitalRadius>377</OrbitalRadius>
-		<OrbitalPeriod>27061</OrbitalPeriod>
+		<OrbitalPeriod>2.74</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Rhea</Name>
 		<Dad>Saturn</Dad>
 		<OrbitalRadius>527</OrbitalRadius>
-		<OrbitalPeriod>19085</OrbitalPeriod>
+		<OrbitalPeriod>4.52</OrbitalPeriod>
 	</record>
 	<record>
 		<Name>Titan</Name>
