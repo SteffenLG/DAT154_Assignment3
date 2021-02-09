@@ -174,6 +174,7 @@ namespace BergenSpaceProgram
 				{
 					selectedObject = null;
 					pixelsPerMegameter = PixelsPerMegameter(solarSystemData, MyCanvas.ActualWidth, MyCanvas.ActualHeight);
+					InfoPanel.Visibility = Visibility.Hidden;
 				}
 				else if (e.KeyboardDevice.IsKeyDown(Key.Up))
                 {
@@ -201,6 +202,15 @@ namespace BergenSpaceProgram
 				}
 				selectedObject = so;
 				pixelsPerMegameter = PixelsPerMegameter(so.Children, screenWidth, screenHeight);
+				//TODO: add show and hide info panel
+				InfoPanel.Visibility = Visibility.Visible;
+
+				InfoPanelName.Content = selectedObject.Name;
+				InfoPanelOrbitalRadius.Content = selectedObject.OrbitalRadius;
+				InfoPanelOrbitalPeriod.Content = selectedObject.OrbitalPeriod;
+				InfoPanelRotationalPeriod.Content = selectedObject.RotationalPeriod;
+				InfoPanelDadBod.Content = selectedObject.DadBod.Name;
+
 			}
 
 			void TimeScaleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

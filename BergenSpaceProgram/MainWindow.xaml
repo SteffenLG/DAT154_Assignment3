@@ -9,14 +9,14 @@
     <Grid Background="Black">
 
         <Canvas Name="MyCanvas" Margin="32,25,25,25" Background="Black">
-            <StackPanel x:Name="spMain" Orientation="Horizontal" Canvas.Bottom="0" Canvas.Left="0" Canvas.Right="0" >
-                <Canvas Name="TimeScaleCanvas" Background="#FF0072D6"  RenderTransformOrigin="1,1" Height="38" Width="234">
+            <StackPanel x:Name="spMain" Orientation="Horizontal" Canvas.Bottom="0"  Canvas.Right="0">
+                <Canvas Name="TimeScaleCanvas" Background="#FF0072D6"  RenderTransformOrigin="1,1" Height="38" Width="234" VerticalAlignment="Bottom">
                     <Slider Name="TimeScaleSlider" Width="236" SmallChange="0.01" RenderTransformOrigin="0.502,0.556" Canvas.Bottom="0"/>
                     <Label Content="TimeScale" Width="71" Foreground="#FFF90000" FontWeight="Bold" Visibility="Visible" Height="26" Canvas.Bottom="15"/>
                     <Label Content="{Binding ElementName=TimeScaleSlider, Path=Value}"  Foreground="#FFF90000" FontWeight="Bold" Canvas.Right="0" Canvas.Bottom="15"/>
                 </Canvas>
-                <StackPanel>
-                    <DockPanel>
+                <StackPanel VerticalAlignment="Bottom">
+                    <DockPanel >
                         <TextBlock Text="ShowPlanetLabels" Foreground="White" DockPanel.Dock="Left" FontWeight="Bold"/>
 
                         <CheckBox Name="ShowPlanetLabels" DockPanel.Dock="Right" VerticalAlignment="Bottom" HorizontalAlignment="Center" Checked="ShowPlanetLabels_Checked" Unchecked="ShowPlanetLabels_Unchecked" IsChecked="True"/>
@@ -27,11 +27,34 @@
                         <CheckBox  Name="ShowMoonLabels" DockPanel.Dock="Right" VerticalAlignment="Bottom" HorizontalAlignment="Center" Checked="ShowMoonLabels_Checked" Unchecked="ShowMoonLabels_Unchecked" IsChecked="false"/>
                     </DockPanel>
                 </StackPanel>
-                <Canvas Name="ZoomScaleCanvas" Background="#FF0072D6"  RenderTransformOrigin="1,1" Height="38" Width="234">
+                <Canvas Name="ZoomScaleCanvas" Background="#FF0072D6"  RenderTransformOrigin="1,1" Height="38" Width="234" VerticalAlignment="Bottom">
                     <Slider Name="ZoomScaleSlider" Width="236" SmallChange="0.01" RenderTransformOrigin="0.502,0.556" Canvas.Bottom="0" ValueChanged="ZoomScaleSlider_ValueChanged"/>
                     <Label Content="ZoomScale" Width="71" Foreground="#FFF90000" FontWeight="Bold" Visibility="Visible" Height="26" Canvas.Bottom="15"/>
                     <Label Content="{Binding ElementName=ZoomScaleSlider, Path=Value}"  Foreground="#FFF90000" FontWeight="Bold" Canvas.Right="0" Canvas.Bottom="15"/>
                 </Canvas>
+                <StackPanel Name="InfoPanel" Orientation="Vertical" VerticalAlignment="Bottom" Visibility="Hidden">
+                    <DockPanel>
+                        <Label Content="Name" Foreground="White" FontWeight="Bold"></Label>
+                        <Label Name="InfoPanelName"  Content="value" Foreground="Red" FontWeight="Bold"></Label>
+                        
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="OrbitalRadius" Foreground="White" FontWeight="Bold"></Label>
+                        <Label Name="InfoPanelOrbitalRadius"  Content="value" Foreground="Red" FontWeight="Bold"></Label>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="OrbitalPeriod" Foreground="White" FontWeight="Bold"></Label>
+                        <Label Name="InfoPanelOrbitalPeriod"  Content="value" Foreground="Red" FontWeight="Bold"></Label>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="RotationalPeriod" Foreground="White" FontWeight="Bold"></Label>
+                        <Label Name="InfoPanelRotationalPeriod"  Content="value" Foreground="Red" FontWeight="Bold"></Label>
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="DadBod" Foreground="White" FontWeight="Bold"></Label>
+                        <Label Name="InfoPanelDadBod"  Content="value" Foreground="Red" FontWeight="Bold"></Label>
+                    </DockPanel>
+                </StackPanel>
             </StackPanel>
 
             <!--<Canvas Name="TimeScaleCanvas" Background="#FF0072D6"  RenderTransformOrigin="1,1" Height="107" Canvas.Right="10" Canvas.Bottom="10" Width="236" Canvas.Left="497" Canvas.Top="267">

@@ -19,11 +19,13 @@ namespace BergenSpaceProgram
 		private const double ELLIPSE_SHIFT = 150;
 		private const double LABEL_SHIFT = 100;
 		private Line line;
+		private Line underLine;
 
 		public SpaceObjectHolder(Canvas parentCanvas,SpaceObject spaceObject)
 		{
 			this.spaceObjectData = spaceObject;
 			line = new Line();
+			underLine = new Line();
 			canvas = new Canvas();
 			ellipse = new Ellipse();
 			label = new Label();
@@ -48,6 +50,8 @@ namespace BergenSpaceProgram
 					ellipse.Height = 10;
 					ellipse.Fill = new SolidColorBrush(Colors.Peru);
 					label.Visibility = Visibility.Hidden;
+					line.Visibility = Visibility.Hidden;
+					underLine.Visibility = Visibility.Hidden;
 					break;
 				default:
 					ellipse.Width = 5;
@@ -56,13 +60,24 @@ namespace BergenSpaceProgram
 					break;
 
 			}
-			line.X1 = LABEL_SHIFT+2;
-			line.Y1 = LABEL_SHIFT+2;
-			line.X2 = ELLIPSE_SHIFT;
-			line.Y2 = ELLIPSE_SHIFT;
+			line.X1 = LABEL_SHIFT+40;
+			line.Y1 = LABEL_SHIFT+20;
+			line.X2 = ELLIPSE_SHIFT + ellipse.Width/2;
+			line.Y2 = ELLIPSE_SHIFT  +  ellipse.Height/2;
 			line.StrokeThickness = 1;
-			line.Stroke = new SolidColorBrush(Colors.Blue);
+			line.Stroke = new SolidColorBrush(Colors.White);
 			canvas.Children.Add(line);
+
+
+			underLine.X1 = LABEL_SHIFT + 10;
+			underLine.Y1 = LABEL_SHIFT + 20;
+			underLine.X2 = LABEL_SHIFT + 40;
+			underLine.Y2 = LABEL_SHIFT + 20;
+			underLine.StrokeThickness = 1;
+			underLine.Stroke = new SolidColorBrush(Colors.White);
+			canvas.Children.Add(underLine);
+
+
 			Canvas.SetLeft(label, LABEL_SHIFT);
 			Canvas.SetTop(label, LABEL_SHIFT);
 			Canvas.SetLeft(ellipse, ELLIPSE_SHIFT);
@@ -98,11 +113,13 @@ namespace BergenSpaceProgram
             {
 				label.Visibility = Visibility.Hidden;
 				line.Visibility = Visibility.Hidden;
+				underLine.Visibility = Visibility.Hidden;
             }
 			else
             {
 				label.Visibility = Visibility.Visible;
 				line.Visibility = Visibility.Visible;
+				underLine.Visibility = Visibility.Visible;
             }
         }
 	}
